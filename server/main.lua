@@ -310,7 +310,7 @@ FiveguardAddon.Server.BotLoader = function()
     local token, webhook, channelID = botConfig.BotToken, botConfig.WebHook, botConfig.ChannelID
 
     local validateConfig = function(value, message)
-        if value == '' or value == nil or value == "DEIN_BOT_TOKEN" or value == "DEIN_CHANNEL_WEBHOOK_FÜR_DEN_BOT" or value == "DEINE_DISCORD_CHANNEL_ID_FÜR_DEN_BOT" then
+        if value == '' or value == nil or value == "YOUR_BOT_TOKEN" or value == "YOUR_CHANNEL_WEBHOOK_FOR_THE_BOT" or value == "YOUR_DISCORD_CHANNEL_ID_FOR_THE_BOT" then
             print((FiveguardAddon.Config.Language.BotLoader):format(message, value))
             return false
         end
