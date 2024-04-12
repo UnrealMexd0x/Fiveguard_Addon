@@ -17,3 +17,7 @@ server_scripts {
 	'config/sv_*.lua',
 	'server/*.lua'
 }
+
+dependencies {
+	'ox_lib'
+}
