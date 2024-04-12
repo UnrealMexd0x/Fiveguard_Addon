@@ -38,7 +38,7 @@ FiveguardAddon = {
             CommandScreenshotInfo = "Usage: /%s [Player-ID]",
             ScreenshotCreated = "Screenshot has been created: %s",
 
-            CommandRecordInfo = "Usage: /%s [Player-ID] [Time until 5 Sec]",
+            CommandRecordInfo = "Usage: /%s [Player-ID] [Time]",
             RecordCreated = "Recording has been created: %s",
 
             NoPermission = "You do not have permission to execute this command.",
@@ -52,7 +52,7 @@ FiveguardAddon = {
                 "%s [BanID] - Unbans a player.\n" ..
                 "%s [Player-ID] [Reason] - Bans a player with the specified ID and reason.\n" ..
                 "%s [Player-ID] - Takes a screenshot of a player.\n" ..
-                "%s [Player-ID] [Time until 5 Sec] - Records a video of a player.",
+                "%s [Player-ID] [Time] - Records a video of a player.",
 
                 BanTrue = "Player with ID %s has been banned. Reason: %s",
                 BanFalse = "Invalid use of command. Usage: %s [Player-ID] [Reason]",
