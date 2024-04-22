@@ -18,8 +18,8 @@ Fiveguard Anticheat is a powerful tool for maintaining server integrity and ensu
 
 ## Requirements
 
-### Fiveguard
-### ox_lib
+#### Fiveguard
+#### ox_lib
 
 ## Configuration
 
