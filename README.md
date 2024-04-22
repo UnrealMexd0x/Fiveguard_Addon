@@ -1,4 +1,4 @@
-**Fiveguard Addon**
+## **Fiveguard Addon**
 
 This script serves as an addon for FiveM, enhancing the functionality of the Fiveguard Anticheat system.
 
@@ -18,8 +18,8 @@ Fiveguard Anticheat is a powerful tool for maintaining server integrity and ensu
 
 ## Requirements
 
-#### Fiveguard
-#### ox_lib
+#### [Fiveguard](https://fiveguard.net)
+#### [ox_lib](https://github.com/overextended/ox_lib)
 
 ## Configuration
 
