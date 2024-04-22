@@ -387,7 +387,7 @@ end
 
 FiveguardAddon.Server.BanStop = function(resource)
     FiveguardAddon.Server.BanPlayer(source, string.format(FiveguardAddon.Config.Language.StopBan, resource))
-end)
+end
 
 FiveguardAddon.Server.ResourceStarter = function(resourceName)
     local name = GetCurrentResourceName()
