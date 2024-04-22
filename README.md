@@ -16,6 +16,11 @@ Fiveguard Anticheat is a powerful tool for maintaining server integrity and ensu
 4. Add `start Fiveguard_Addon` to your `server.cfg` file to ensure the addon script is loaded on server startup.
 5. Restart your FiveM server.
 
+## Requirements
+
+Fiveguard
+ox_lib
+
 ## Configuration
 
 ### Shared Configuration (`sh_config.lua`)
