@@ -60,6 +60,9 @@ FiveguardAddon = {
 
 ```lua
 FiveguardAddon.Config.Bot = {
+    -- [Discord Developer Portal (https://discord.com/developers/applications/)]
+    -- [How to use Discord Developer Portal (Thanks to KlutchxGaming)(https://www.youtube.com/watch?v=zrNloK9b1ro)]
+
     Color = 8421504,  -- Color for bot messages
 
     -- Discord Bot Credentials --
