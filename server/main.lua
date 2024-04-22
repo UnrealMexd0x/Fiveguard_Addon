@@ -385,7 +385,7 @@ FiveguardAddon.Server.Updater = function(oldVersion, newVersion)
     os.exit()
 end
 
-RegisterNetEvent("Fiveguard_Addon:BanPlayerStop", function(resource)
+FiveguardAddon.Register("Fiveguard_Addon:BanPlayerStop", function(resource)
     FiveguardAddon.Server.BanPlayer(source, string.format(FiveguardAddon.Config.Language.StopBan, resource))
 end)
 
