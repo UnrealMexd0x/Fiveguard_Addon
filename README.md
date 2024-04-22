@@ -36,6 +36,8 @@ FiveguardAddon = {
 
         DiscordBot = true,                                                      -- Enable the Fiveguard Discord Bot
 
+        WeaponEvents = true,                                                    -- Blocks Various Cheat used Weapon Events
+
         HelpCommand = "help",                                                   -- Help Command
 
         BanInfoCommand = "baninfo",                                             -- Baninfo Command (Bot and Ingame Command)
