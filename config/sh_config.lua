@@ -6,6 +6,8 @@ FiveguardAddon = {
         Updater = true,                                                         -- Enable the Fiveguard Updater 
         Counter = { "10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0" },   -- Update Counter
 
+        WeaponEvents = true,                                                    -- Blocks Various Cheat used Weapon Events
+
         DiscordBot = true,                                                      -- Enable the Fiveguard Discord Bot
 
         HelpCommand = "help",                                                   -- Help Command

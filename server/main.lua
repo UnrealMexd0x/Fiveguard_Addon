@@ -195,7 +195,7 @@ FiveguardAddon.Server.DiscordRequest = function(method, endpoint, jsondata)
         ["Content-Type"] = "application/json",
         ["Authorization"] = "Bot " .. FiveguardAddon.Config.Bot.BotToken
     })
-    while data == nil do Citizen.Wait(0) end
+    while data == nil do FiveguardAddon.Wait(0) end
     return data
 end
 
@@ -216,7 +216,7 @@ FiveguardAddon.Server.DiscordLog = function(name, message, color)
 end
 
 FiveguardAddon.Server.String.Starts = function(String, Start)
-    return string.sub(String, 1, string.len(Start)) == Start
+    return string.sub(String, 1, #Start) == Start
 end
 
 FiveguardAddon.Server.DiscordBot = function(command)
@@ -282,6 +282,8 @@ FiveguardAddon.Server.DiscordBot = function(command)
 end
 
 FiveguardAddon.Server.WeaponEvent = function(playerSource, data)
+    if not FiveguardAddon.Config.WeaponEvents then return end
+
     local weaponType = data.weaponType
     local weaponDamage = data.weaponDamage
 
@@ -332,7 +334,9 @@ FiveguardAddon.Server.BotLoader = function()
             if lastmessage.data then
                 local listdata = json.decode(lastmessage.data)
                 local playerdisId = listdata.author.id
-                if FiveguardAddon.Server.LastData == nil then FiveguardAddon.Server.LastData = listdata.id end
+                if FiveguardAddon.Server.LastData == nil then
+                    FiveguardAddon.Server.LastData = listdata.id
+                end
 
                 if FiveguardAddon.Server.LastData ~= listdata.id and listdata.author.username ~= botConfig.ReplyUserName then
                     for _, allowedID in ipairs(botConfig.Allowedusers) do
