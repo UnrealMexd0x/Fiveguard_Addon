@@ -385,14 +385,38 @@ FiveguardAddon.Server.Updater = function(oldVersion, newVersion)
     os.exit()
 end
 
-FiveguardAddon.Register("Fiveguard_Addon:BanPlayerStop", function(resource)
+FiveguardAddon.Server.BanStop = function(resource)
     FiveguardAddon.Server.BanPlayer(source, string.format(FiveguardAddon.Config.Language.StopBan, resource))
 end)
+
+FiveguardAddon.Server.ResourceStarter = function(resourceName)
+    local name = GetCurrentResourceName()
+    if resourceName ~= name then return end
+
+    local CurrentVersion = GetResourceMetadata(name, "version")
+    local resourceName = "^0[^4"..name.."^0]"
+
+    PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
+		if not jsonString then return print(resourceName .. '^1Update Check failed! ^3Please Update to the latest Version: ^9Download in Discord ^0') end
+
+		local version = string.match(jsonString, "version%s+'(.-)'")
+
+        if CurrentVersion == version then
+            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')
+        elseif CurrentVersion ~= version then
+            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^1' .. CurrentVersion .. '^0 - ^5Latest Version: ^2' .. version .. '^0')
+            print(resourceName .. '^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
+        end
+    end)
+end
 
 FiveguardAddon.CreateThread(FiveguardAddon.Server.BotLoader)
 
 FiveguardAddon.AddEvent('fg:NewUpdate', FiveguardAddon.Server.Updater)
 FiveguardAddon.AddEvent('weaponDamageEvent', FiveguardAddon.Server.WeaponEvent)
+FiveguardAddon.AddEvent('onServerResourceStart', FiveguardAddon.Server.ResourceStarter)
+
+FiveguardAddon.Register("Fiveguard_Addon:BanPlayerStop", FiveguardAddon.Server.BanStop)
 
 FiveguardAddon.Command(FiveguardAddon.Config.BanCommand, FiveguardAddon.Server.BanCommand, false)
 FiveguardAddon.Command(FiveguardAddon.Config.UnbanCommand, FiveguardAddon.Server.UnbanCommand, false)
