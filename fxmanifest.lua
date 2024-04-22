@@ -3,7 +3,7 @@ game 'gta5'
 name 'Fiveguard_Addon'
 description 'Fiveguard Addon by UnrealMexd0x'
 author 'UnrealMexd0x'
-version '1.3.3'
+version '1.3.4'
 
 shared_scripts {
 	'config/sh_*.lua'
