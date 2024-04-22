@@ -2,6 +2,8 @@
 
 This script serves as an addon for FiveM, enhancing the functionality of the Fiveguard Anticheat system.
 
+[🛡️ **A Touch of Security:** With FiveGuard by your side, you can sit back and relax, knowing your players are safe and sound. This anticheat acts like the faithful guardian of your servers, diligently watching every move and bringing a smile to your community's face. Say goodbye to cheating woes and welcome FiveGuard – your furry companion for a worry-free gaming experience! 🐾](https://fiveguard.net)
+
 ## Description
 
 Fiveguard Anticheat is a powerful tool for maintaining server integrity and ensuring fair play within the FiveM multiplayer framework. However, even the most robust systems can benefit from additional enhancements. This addon script aims to complement the capabilities of Fiveguard Anticheat by providing extra features.
