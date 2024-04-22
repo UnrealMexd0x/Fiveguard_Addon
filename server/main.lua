@@ -391,12 +391,13 @@ end
 
 FiveguardAddon.Server.ResourceStarter = function(resourceName)
     local name = GetCurrentResourceName()
+
     if resourceName ~= name then return end
 
-    local CurrentVersion = GetResourceMetadata(name, "version")
-    local resourceName = "^0[^4"..name.."^0]"
-
     PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
+        local CurrentVersion = GetResourceMetadata(name, "version")
+        local resourceName = "^0[^4"..name.."^0]"
+
         if not jsonString then 
             print(resourceName .. '^1 ✗ Update Check failed! ^3Please Update to the latest Version: ^9Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
             return
@@ -412,7 +413,7 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
         if CurrentVersion == remoteVersion then
             print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')
         else
-            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0 - ^5Latest Version: ^2' .. remoteVersion .. '^0')
+            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^1' .. CurrentVersion .. '^0 - ^5Latest Version: ^2' .. remoteVersion .. '^0')
             print(resourceName .. '^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
         end
     end)
