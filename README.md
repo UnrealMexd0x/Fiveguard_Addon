@@ -2,7 +2,7 @@
 
 This script serves as an addon for FiveM, enhancing the functionality of the Fiveguard Anticheat system.
 
-[🛡️ **A Touch of Security:** With FiveGuard by your side, you can sit back and relax, knowing your players are safe and sound. This anticheat acts like the faithful guardian of your servers, diligently watching every move and bringing a smile to your community's face. Say goodbye to cheating woes and welcome FiveGuard! 🐾](https://fiveguard.net)
+[🛡️ **A Touch of Security:** With FiveGuard by your side, you can sit back and relax, knowing your players are safe and sound. This anticheat acts like the faithful guardian of your servers, diligently watching every move and bringing a smile to your community's face. Say goodbye to cheating woes and welcome FiveGuard!](https://fiveguard.net)
 
 ## Description
 
