@@ -3,10 +3,6 @@ FiveguardAddon.Client = {
     resourceWhitelist = {}
 }
 
-FiveguardAddon.Client.Event = function(EventName)
-    TriggerServerEvent(EventName)
-end
-
 FiveguardAddon.CreateThread(function()
     FiveguardAddon.Client.playerLoaded = true
 end)
