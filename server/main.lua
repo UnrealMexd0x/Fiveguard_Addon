@@ -397,14 +397,22 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     local resourceName = "^0[^4"..name.."^0]"
 
     PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
-		if not jsonString then return print(resourceName .. '^1Update Check failed! ^3Please Update to the latest Version: ^9Download in Discord ^0') end
+        if not jsonString then 
+            print(resourceName .. '^1Update Check failed! ^3Please Update to the latest Version: ^9Download in Discord ^0')
+            return
+        end
 
-		local version = string.match(jsonString, "version%s+'(.-)'")
+        local remoteVersion = string.match(jsonString, "version%s*['\"]([%d%.]+)['\"]")
 
-        if CurrentVersion == version then
+        if not remoteVersion then
+            print(resourceName .. '^1Failed to parse version from remote manifest.^0')
+            return
+        end
+
+        if CurrentVersion == remoteVersion then
             print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')
-        elseif CurrentVersion ~= version then
-            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^1' .. CurrentVersion .. '^0 - ^5Latest Version: ^2' .. version .. '^0')
+        else
+            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0 - ^5Latest Version: ^2' .. remoteVersion .. '^0')
             print(resourceName .. '^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
         end
     end)
