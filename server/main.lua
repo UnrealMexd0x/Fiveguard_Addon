@@ -398,7 +398,7 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
 
     PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
         if not jsonString then 
-            print(resourceName .. '^1Update Check failed! ^3Please Update to the latest Version: ^9Download in Discord ^0')
+            print(resourceName .. '^1Update Check failed! ^3Please Update to the latest Version: ^9Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
             return
         end
 
