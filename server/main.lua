@@ -314,8 +314,10 @@ FiveguardAddon.Server.BotLoader = function()
     local validateConfig = function(value, message)
         if value == '' or value == nil or value == "YOUR_BOT_TOKEN" or value == "YOUR_CHANNEL_WEBHOOK_FOR_THE_BOT" or value == "YOUR_DISCORD_CHANNEL_ID_FOR_THE_BOT" then
             print((FiveguardAddon.Config.Language.BotLoader):format(message, value))
+
             return false
         end
+
         return true
     end
 
@@ -325,6 +327,7 @@ FiveguardAddon.Server.BotLoader = function()
 
     while true do
         local channel = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID, {})
+
         if channel.data then
             local data = json.decode(channel.data)
             local list = data.last_message_id

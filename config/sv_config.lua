@@ -21,3 +21,5 @@ FiveguardAddon.Config.Bot = {
     Prefix = "+",  -- Command prefix for the bot
     WaitEveryTick = 4000  -- Wait time in milliseconds for each bot tick
 }
+
+return FiveguardAddon.Config.Bot

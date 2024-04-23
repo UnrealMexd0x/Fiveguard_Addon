@@ -32,5 +32,5 @@ FiveguardAddon.Client.Stop = function(resource)
     FiveguardAddon.Client.addWhitelist(resource)
 end
 
-AddEventHandler("onClientResourceStop", FiveguardAddon.Client.ClientStop)
-AddEventHandler("onResourceStop", FiveguardAddon.Client.Stop)
+FiveguardAddon.AddEvent("onClientResourceStop", FiveguardAddon.Client.ClientStop)
+FiveguardAddon.AddEvent("onResourceStop", FiveguardAddon.Client.Stop)

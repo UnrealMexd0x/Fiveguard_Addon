@@ -82,3 +82,5 @@ FiveguardAddon = {
     Wait = Citizen.Wait, Command = RegisterCommand, AddEvent = AddEventHandler, CreateThread = Citizen.CreateThread, Register = RegisterNetEvent
     -- -----------------------------------------------------------------------------------------------------------------------------------------------
 }
+
+return FiveguardAddon
