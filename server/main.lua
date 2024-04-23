@@ -397,27 +397,42 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
 
     if resourceName ~= name then return end
 
-    PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
-        local CurrentVersion = GetResourceMetadata(name, "version")
-        local resourceName = "^0[^4"..name.."^0]"
+    local CurrentVersion = GetResourceMetadata(name, "version")
+    local ResourceName = ('^0[^4%s^0]'):format(name)
 
-        if not jsonString then 
-            print(resourceName .. '^1 ✗ Update Check failed! ^3Please Update to the latest Version: ^9Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
-            return
-        end
+    if not CurrentVersion then return end
+    if not FiveguardAddon.Config.AddonUpdateInfo then return end
 
-        local remoteVersion = string.match(jsonString, "version%s*['\"]([%d%.]+)['\"]")
+    local VersionAccepted = ('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s^0'):format(ResourceName, CurrentVersion)
+    local VersionDenied = ('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0'):format(ResourceName)
 
-        if not remoteVersion then
-            print(resourceName .. '^1 ✗ Failed to parse version from remote manifest.^0')
-            return
-        end
+    local RequestVersion = function(callback)
+        PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
+            if not jsonString or errorCode == 404 then
+                callback('error')
+                return
+            end
+            local remoteVersion = string.match(jsonString, "version%s*['\"]([%d%.]+)['\"]")
+            callback(remoteVersion)
+        end)
+    end
 
-        if CurrentVersion == remoteVersion then
-            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')
+    RequestVersion(function(remoteVersion)
+        if CurrentVersion ~= remoteVersion then
+            print(VersionDenied)
         else
-            print(resourceName .. '^2 ✓ Started Correctly^0 - ^5Current Version: ^1' .. CurrentVersion .. '^0 - ^5Latest Version: ^2' .. remoteVersion .. '^0')
-            print(resourceName .. '^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0')
+            print(VersionAccepted)
+        end
+    end)
+
+    FiveguardAddon.CreateThread(function()
+        while true do
+            Citizen.Wait(60000)
+            RequestVersion(function(remoteVersion)
+                if CurrentVersion ~= remoteVersion then
+                    print(VersionDenied)
+                end
+            end)
         end
     end)
 end

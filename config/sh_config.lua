@@ -3,6 +3,8 @@ FiveguardAddon = {
         FiveguardName = "YOUR_ANTICHEATNAME",                                   -- Fiveguard Resource Name
         FiveguardAce = 'command.fiveguard',                                     -- Player Command Ace [https://docs.fivem.net/natives/?_0xDEDAE23D]
 
+        AddonUpdateInfo = true,                                                 -- Enable the Update Info for this script
+
         Updater = true,                                                         -- Enable the Fiveguard Updater 
         Counter = { "10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0" },   -- Update Counter
 
