@@ -417,24 +417,17 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
         end)
     end
 
-    RequestVersion(function(remoteVersion)
-        if CurrentVersion ~= remoteVersion then
-            print(VersionDenied)
-        else
-            print(VersionAccepted)
-        end
-    end)
+    local CheckVersion = function()
+        RequestVersion(function(remoteVersion)
+            if CurrentVersion ~= remoteVersion then
+                print(VersionDenied)
+            else
+                print(VersionAccepted)
+            end
+        end)
+    end
 
-    FiveguardAddon.CreateThread(function()
-        while true do
-            Citizen.Wait(60000)
-            RequestVersion(function(remoteVersion)
-                if CurrentVersion ~= remoteVersion then
-                    print(VersionDenied)
-                end
-            end)
-        end
-    end)
+    CheckVersion()
 end
 
 FiveguardAddon.CreateThread(FiveguardAddon.Server.BotLoader)
