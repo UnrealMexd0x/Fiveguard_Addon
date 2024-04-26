@@ -173,10 +173,6 @@ FiveguardAddon.Server.RecordCommand = function(playerSource, args)
     end)
 end
 
-FiveguardAddon.Server.TempPermission = function(playerSource, category, permission, allow)
-    FiveguardAddon.Server.TempInfo, FiveguardAddon.Server.TempError = exports[FiveguardAddon.Config.FiveguardName]:SetTempPermission(playerSource, category, permission, allow, FiveguardAddon.Config.IgnoreStaticPermission)
-end
-
 FiveguardAddon.Server.RecordPlayer = function(playerSource, time, handler)
     exports[FiveguardAddon.Config.FiveguardName]:recordPlayerScreen(playerSource, time, handler)
 end
@@ -328,7 +324,7 @@ FiveguardAddon.Server.BotLoader = function()
             local lastmessage = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID .. "/messages/" .. list, {})
 
             if not lastmessage then
-                FiveguardAddon.Server.DiscordLog('Fiveguard Addon', 'Welcome to the Fiveguard_Addon Discord Bot', FiveguardAddon.Config.SV.Bot.Color) 
+                FiveguardAddon.Server.DiscordLog('Fiveguard Addon', 'Welcome to the Fiveguard_Addon Discord Bot', FiveguardAddon.Config.SV.Bot.Color)
             end
 
             if lastmessage.data then
@@ -371,12 +367,7 @@ FiveguardAddon.Server.Updater = function(oldVersion, newVersion)
             unit = FiveguardAddon.Config.Language.Second
         end
 
-        TriggerClientEvent('ox_lib:notify', -1, {
-            title = "",
-            icon = "fa-solid fa-shield-halved",
-            description = (FiveguardAddon.Config.Language.Updater.PlayerNotify):format(time, unit),
-            position = "top-center"
-        })
+        FiveguardAddon.Config.SV.UpdateNotify((FiveguardAddon.Config.Language.Updater.PlayerNotify):format(time, unit))
         FiveguardAddon.Wait(notifyDelay)
     end
 

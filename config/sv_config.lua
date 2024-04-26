@@ -23,7 +23,20 @@ FiveguardAddon.Config.SV = {
         WaitEveryTick = 4000  -- Wait time in milliseconds for each bot tick
     },
 
+    UpdateNotify = function(msg)
+        -- If you prefer not to use ox_lib, remember to remove ox_lib from your fxmanifest.lua under dependencies.
+
+        TriggerClientEvent('ox_lib:notify', -1, {
+            title = "",
+            icon = "fa-solid fa-shield-halved",
+            description = msg,
+            position = "top-center"
+        })
+    end,
+
     WeaponCheatDetectionFunction = function(player, weapon, damage, timing, silenced)
+        -- You can deactivate weapon events by modifying the 'WeaponEvents' variable in sh_config.lua.
+
         if weapon == 133987706 and (timing > 200000 and damage > 200) then
             FiveguardAddon.Server.BanPlayer(player, "Skript.gg (Anti Kill) [Fiveguard_Addon]")
             CancelEvent()
