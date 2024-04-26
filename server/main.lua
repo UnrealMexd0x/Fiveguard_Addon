@@ -226,10 +226,10 @@ FiveguardAddon.Server.DiscordBot = function(command)
     local Prefix = Config.Prefix
     local Color = Config.Color
 
-    local UnbanCommand = Prefix .. Config.UnbanCommand
-    local BanCommand = Prefix .. Config.BanCommand
-    local ScreenshotCommand = Prefix .. Config.ScreenshotCommand
-    local RecordCommand = Prefix .. Config.RecordCommand
+    local UnbanCommand = Prefix .. FiveguardAddon.Config.UnbanCommand
+    local BanCommand = Prefix .. FiveguardAddon.Config.BanCommand
+    local ScreenshotCommand = Prefix .. FiveguardAddon.Config.ScreenshotCommand
+    local RecordCommand = Prefix .. FiveguardAddon.Config.RecordCommand
 
     if FiveguardAddon.Server.String.Starts(command, Prefix) then
         if FiveguardAddon.Server.String.Starts(command, Prefix .. FiveguardAddon.Config.HelpCommand) then
@@ -407,7 +407,7 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     end
 
     RequestVersion(function(remoteVersion)
-        if not FiveguardAddon then
+        if not FiveguardAddon or FiveguardAddon == {} then
             print(VersionDenied)
         elseif CurrentVersion ~= remoteVersion then
             print(VersionOutdated)
