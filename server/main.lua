@@ -321,10 +321,12 @@ FiveguardAddon.Server.BotLoader = function()
         if channel.data then
             local data = json.decode(channel.data)
             local list = data.last_message_id
-            local lastmessage = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID .. "/messages/" .. list, {})
+            local lastmessage
 
-            if not lastmessage then
+            if not list then
                 FiveguardAddon.Server.DiscordLog('Fiveguard Addon', 'Welcome to the Fiveguard_Addon Discord Bot', FiveguardAddon.Config.SV.Bot.Color)
+            else
+                lastmessage = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID .. "/messages/" .. list, {})
             end
 
             if lastmessage.data then
