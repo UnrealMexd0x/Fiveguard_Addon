@@ -1,3 +1,5 @@
+-- V1.4.0 Author UnrealMexd0x
+
 FiveguardAddon.Config.SV = {
     Bot = {
         -- [Discord Developer Portal (https://discord.com/developers/applications/)]

@@ -1,3 +1,5 @@
+-- V1.4.0 Author UnrealMexd0x
+
 FiveguardAddon = {
     Config = {
         FiveguardName = "YOUR_ANTICHEATNAME",                                   -- Fiveguard Resource Name

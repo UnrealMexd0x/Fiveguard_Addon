@@ -1,3 +1,5 @@
+-- V1.4.0 Author UnrealMexd0x
+
 FiveguardAddon = FiveguardAddon or {}
 
 FiveguardAddon.Server = {
