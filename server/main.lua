@@ -1,3 +1,4 @@
+FiveguardAddon = FiveguardAddon or {}
 FiveguardAddon.Server = {
     String = {},
     LastData = nil,
@@ -193,7 +194,7 @@ FiveguardAddon.Server.DiscordRequest = function(method, endpoint, jsondata)
         }
     end, method, #jsondata > 0 and json.encode(jsondata) or "", {
         ["Content-Type"] = "application/json",
-        ["Authorization"] = "Bot " .. FiveguardAddon.Config.Bot.BotToken
+        ["Authorization"] = "Bot " .. FiveguardAddon.Config.SV.Bot.BotToken
     })
     while data == nil do FiveguardAddon.Wait(0) end
     return data
@@ -205,13 +206,13 @@ FiveguardAddon.Server.DiscordLog = function(name, message, color)
             ["color"] = color,
             ["title"] = "**" .. name .. "**",
             ["description"] = message,
-            ["footer"] = { ["text"] = FiveguardAddon.Config.Bot.ReplyUserName }
+            ["footer"] = { ["text"] = FiveguardAddon.Config.SV.Bot.ReplyUserName }
         }
     }
-    PerformHttpRequest(FiveguardAddon.Config.Bot.WebHook, function(err, text, headers) end, 'POST', json.encode({
-        username = FiveguardAddon.Config.Bot.ReplyUserName,
+    PerformHttpRequest(FiveguardAddon.Config.SV.Bot.WebHook, function(err, text, headers) end, 'POST', json.encode({
+        username = FiveguardAddon.Config.SV.Bot.ReplyUserName,
         embeds = embed,
-        avatar_url = FiveguardAddon.Config.Bot.AvatarURL
+        avatar_url = FiveguardAddon.Config.SV.Bot.AvatarURL
     }), { ['Content-Type'] = 'application/json' })
 end
 
@@ -220,20 +221,21 @@ FiveguardAddon.Server.String.Starts = function(String, Start)
 end
 
 FiveguardAddon.Server.DiscordBot = function(command)
-    local Username = FiveguardAddon.Config.Bot.ReplyUserName
-    local Prefix = FiveguardAddon.Config.Bot.Prefix
-    local Color = FiveguardAddon.Config.Bot.Color
+    local Config = FiveguardAddon.Config.SV.Bot
+    local Username = Config.ReplyUserName
+    local Prefix = Config.Prefix
+    local Color = Config.Color
 
-    local UnbanCommand = Prefix .. FiveguardAddon.Config.UnbanCommand
-    local BanCommand = Prefix .. FiveguardAddon.Config.BanCommand
-    local ScreenshotCommand = Prefix .. FiveguardAddon.Config.ScreenshotCommand
-    local RecordCommand = Prefix .. FiveguardAddon.Config.RecordCommand
+    local UnbanCommand = Prefix .. Config.UnbanCommand
+    local BanCommand = Prefix .. Config.BanCommand
+    local ScreenshotCommand = Prefix .. Config.ScreenshotCommand
+    local RecordCommand = Prefix .. Config.RecordCommand
 
     if FiveguardAddon.Server.String.Starts(command, Prefix) then
         if FiveguardAddon.Server.String.Starts(command, Prefix .. FiveguardAddon.Config.HelpCommand) then
             FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.Info):format(Prefix, UnbanCommand, BanCommand, ScreenshotCommand, RecordCommand)), Color)
         elseif FiveguardAddon.Server.String.Starts(command, BanCommand) then
-            local _, _, playerId, reason = string.find(command, BanCommand .. "%s+(%S+)%s+(.+)")
+            local _, _, playerId, reason = FiveguardAddon.Shared.Search(command, BanCommand .. "%s+(%S+)%s+(.+)")
             playerId = tonumber(playerId)
 
             if playerId and reason then
@@ -243,7 +245,7 @@ FiveguardAddon.Server.DiscordBot = function(command)
                 FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.BanFalse):format(BanCommand)), Color)
             end
         elseif FiveguardAddon.Server.String.Starts(command, UnbanCommand) then
-            local _, _, banId = string.find(command, UnbanCommand .. "%s+(%S+)")
+            local _, _, banId = FiveguardAddon.Shared.Search(command, UnbanCommand .. "%s+(%S+)")
             banId = tonumber(banId)
 
             if banId then
@@ -253,7 +255,7 @@ FiveguardAddon.Server.DiscordBot = function(command)
                 FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.UnbanFalse):format(UnbanCommand)), Color)
             end
         elseif FiveguardAddon.Server.String.Starts(command, ScreenshotCommand) then
-            local _, _, playerId = string.find(command, ScreenshotCommand .. "%s+(%S+)")
+            local _, _, playerId = FiveguardAddon.Shared.Search(command, ScreenshotCommand .. "%s+(%S+)")
             playerId = tonumber(playerId)
 
             if playerId then
@@ -264,7 +266,7 @@ FiveguardAddon.Server.DiscordBot = function(command)
                 FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.ScreenshotFalse):format(ScreenshotCommand)), Color)
             end
         elseif FiveguardAddon.Server.String.Starts(command, RecordCommand) then
-            local _, _, playerId, time = string.find(command, RecordCommand .. "%s+(%S+)%s+(%S+)")
+            local _, _, playerId, time = FiveguardAddon.Shared.Search(command, RecordCommand .. "%s+(%S+)%s+(%S+)")
             playerId = tonumber(playerId)
             time = tonumber(time)
 
@@ -284,31 +286,19 @@ end
 FiveguardAddon.Server.WeaponEvent = function(playerSource, data)
     if not FiveguardAddon.Config.WeaponEvents then return end
 
+    local player = playerSource
     local weaponType = data.weaponType
     local weaponDamage = data.weaponDamage
+    local weaponTiming = data.damageTime
+    local silenced = data.silenced
 
-    if weaponType == 133987706 and (data.damageTime > 200000 and weaponDamage > 200) then
-        FiveguardAddon.Server.BanPlayer(playerSource, "Skript.gg (Anti Kill) [Fiveguard_Addon]")
-        CancelEvent()
-    elseif data.silenced and weaponDamage == 0 then
-        if weaponType == 2725352035 then
-            FiveguardAddon.Server.BanPlayer(playerSource, "Skript.gg (Edging) (1) [Fiveguard_Addon]")
-        elseif weaponType == 3452007600 then
-            FiveguardAddon.Server.BanPlayer(playerSource, "Skript.gg (Edging) (2) [Fiveguard_Addon]")
-        end
-        CancelEvent()
-    elseif not data.silenced and weaponDamage == 131071 and weaponType == 1834887169 then
-        FiveguardAddon.Server.BanPlayer(playerSource, "Skript.gg (Edging) (3) [Fiveguard_Addon]")
-        CancelEvent()
-    elseif weaponType == 133987706 then
-        CancelEvent()
-    end
+    FiveguardAddon.Config.SV.WeaponCheatDetectionFunction(player, weaponType, weaponDamage, weaponTiming, silenced)
 end
 
 FiveguardAddon.Server.BotLoader = function()
     if not FiveguardAddon.Config.DiscordBot then return end
 
-    local botConfig = FiveguardAddon.Config.Bot
+    local botConfig = FiveguardAddon.Config.SV.Bot
     local token, webhook, channelID = botConfig.BotToken, botConfig.WebHook, botConfig.ChannelID
 
     local validateConfig = function(value, message)
@@ -333,7 +323,10 @@ FiveguardAddon.Server.BotLoader = function()
             local list = data.last_message_id
             local lastmessage = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID .. "/messages/" .. list, {})
 
-            if not lastmessage then FiveguardAddon.Wait(1000) end
+            if not lastmessage then
+                FiveguardAddon.Server.DiscordLog('Fiveguard Addon', 'Welcome to the Fiveguard_Addon Discord Bot', FiveguardAddon.Config.SV.Bot.Color) 
+            end
+
             if lastmessage.data then
                 local listdata = json.decode(lastmessage.data)
                 local playerdisId = listdata.author.id
@@ -383,13 +376,13 @@ FiveguardAddon.Server.Updater = function(oldVersion, newVersion)
         FiveguardAddon.Wait(notifyDelay)
     end
 
-    FiveguardAddon.Server.DiscordLog('Fiveguard Addon', (FiveguardAddon.Config.Language.Updater.DiscordLog):format(newVersion), FiveguardAddon.Config.Bot.Color)
+    FiveguardAddon.Server.DiscordLog('Fiveguard Addon', (FiveguardAddon.Config.Language.Updater.DiscordLog):format(newVersion), FiveguardAddon.Config.SV.Bot.Color)
 
     os.exit()
 end
 
 FiveguardAddon.Server.BanStop = function(resource)
-    FiveguardAddon.Server.BanPlayer(source, string.format(FiveguardAddon.Config.Language.StopBan, resource))
+    FiveguardAddon.Server.BanPlayer(source, (FiveguardAddon.Config.Language.StopBan):format(resource))
 end
 
 FiveguardAddon.Server.ResourceStarter = function(resourceName)
@@ -404,7 +397,8 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     if not FiveguardAddon.Config.AddonUpdateInfo then return end
 
     local VersionAccepted = ('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s^0'):format(ResourceName, CurrentVersion)
-    local VersionDenied = ('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0'):format(ResourceName)
+    local VersionDenied = ('%s^1 ✗ Resource may not Work. Please Contact UnrealMexd0x !^0 - ^6Github (https://github.com/UnrealMexd0x/) ^2Discord (UnrealMexd0x)^0'):format(ResourceName)
+    local VersionOutdated = ('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0'):format(ResourceName)
 
     local RequestVersion = function(callback)
         PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
@@ -418,8 +412,10 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     end
 
     RequestVersion(function(remoteVersion)
-        if CurrentVersion ~= remoteVersion then
+        if not FiveguardAddon then
             print(VersionDenied)
+        elseif CurrentVersion ~= remoteVersion then
+            print(VersionOutdated)
         else
             print(VersionAccepted)
         end

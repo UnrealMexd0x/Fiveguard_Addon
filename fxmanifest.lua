@@ -6,7 +6,8 @@ author 'UnrealMexd0x'
 version '1.3.7'
 
 shared_scripts {
-	'config/sh_*.lua'
+	'config/sh_*.lua',
+	'shared/*.lua'
 }
 
 client_scripts {
