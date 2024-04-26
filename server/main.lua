@@ -1,4 +1,5 @@
 FiveguardAddon = FiveguardAddon or {}
+
 FiveguardAddon.Server = {
     String = {},
     LastData = nil,
@@ -186,6 +187,7 @@ end
 
 FiveguardAddon.Server.DiscordRequest = function(method, endpoint, jsondata)
     local data = nil
+
     PerformHttpRequest("https://discordapp.com/api/" .. endpoint, function(errorCode, resultData, resultHeaders)
         data = {
             data = resultData,
@@ -196,7 +198,9 @@ FiveguardAddon.Server.DiscordRequest = function(method, endpoint, jsondata)
         ["Content-Type"] = "application/json",
         ["Authorization"] = "Bot " .. FiveguardAddon.Config.SV.Bot.BotToken
     })
+
     while data == nil do FiveguardAddon.Wait(0) end
+
     return data
 end
 

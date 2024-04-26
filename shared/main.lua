@@ -1,4 +1,5 @@
 FiveguardAddon = FiveguardAddon or {}
+
 FiveguardAddon.Shared = {}
 
 FiveguardAddon.Shared.Search = function(s, pattern, init, plain)

@@ -1,4 +1,5 @@
 FiveguardAddon = FiveguardAddon or {}
+
 FiveguardAddon.Client = {
     playerLoaded = false,
     resourceWhitelist = {}

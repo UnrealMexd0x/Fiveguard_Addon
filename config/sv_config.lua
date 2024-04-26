@@ -5,11 +5,11 @@ FiveguardAddon.Config.SV = {
 
         Color = 8421504,  -- Color for bot messages (Decimal Color Code)
 
-        -- Discord Bot Credentials --
+        ---------- Discord Bot Credentials ---------
         BotToken = "YOUR_BOT_TOKEN",
         WebHook = "YOUR_CHANNEL_WEBHOOK_FOR_THE_BOT",
         ChannelID = "YOUR_DISCORD_CHANNEL_ID_FOR_THE_BOT",
-        ----------------------------
+        --------------------------------------------
 
         -- Users Allowed to Interact with the Bot --
         Allowedusers = {
