@@ -1,4 +1,4 @@
--- V1.4.0 Author UnrealMexd0x
+-- V1.4.1 Author UnrealMexd0x
 
 FiveguardAddon.Config.SV = {
     Bot = {

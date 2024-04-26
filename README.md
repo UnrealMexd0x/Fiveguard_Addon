@@ -99,3 +99,5 @@ This addon script is released under the [MIT License](LICENSE), allowing for fre
 ## Disclaimer
 
 While every effort has been made to ensure the effectiveness and reliability of the addon script, no system can guarantee complete immunity against cheats and exploits. Server administrators are advised to use Fiveguard Addon as part of a comprehensive anticheat strategy, which may include other tools and measures to maximize server integrity and fair play.
+
+### 1.4.1
