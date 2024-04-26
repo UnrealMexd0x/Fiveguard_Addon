@@ -395,7 +395,7 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     if not CurrentVersion then return end
     if not FiveguardAddon.Config.AddonUpdateInfo then return end
 
-    local VersionAccepted = ('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s^0'):format(ResourceName, CurrentVersion)
+    local VersionAccepted = ('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s ^6Github (https://github.com/UnrealMexd0x/)^0'):format(ResourceName, CurrentVersion)
     local VersionDenied = ('%s^1 ✗ Resource may not Work. Please Contact UnrealMexd0x !^0 - ^6Github (https://github.com/UnrealMexd0x/) ^2Discord (UnrealMexd0x)^0'):format(ResourceName)
     local VersionOutdated = ('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0'):format(ResourceName)
 
@@ -411,7 +411,7 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     end
 
     RequestVersion(function(remoteVersion)
-        if not FiveguardAddon or FiveguardAddon == {} then
+        if not FiveguardAddon or next(FiveguardAddon) == nil or remoteVersion == 'error' then
             print(VersionDenied)
         elseif CurrentVersion ~= remoteVersion then
             print(VersionOutdated)
