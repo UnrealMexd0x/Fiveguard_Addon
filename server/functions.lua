@@ -1,6 +1,6 @@
--- V1.4.1 Author UnrealMexd0x
+-- V1.4.2 Author UnrealMexd0x
 
-FiveguardAddon = FiveguardAddon or {}
+local FiveguardAddon = FiveguardAddon or {}
 
 FiveguardAddon.Server = {
     String = {},
@@ -30,7 +30,7 @@ FiveguardAddon.Server.BanCommand = function(playerSource, args)
     end
 
     if #args < 2 then
-        local msg = ((FiveguardAddon.Config.Language.CommandBanInfo):format(FiveguardAddon.Config.BanCommand))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.CommandBanInfo, FiveguardAddon.Config.BanCommand)
         print(msg)
         return
     end
@@ -39,7 +39,7 @@ FiveguardAddon.Server.BanCommand = function(playerSource, args)
     local violation = table.concat(args, " ", 2)
 
     FiveguardAddon.Server.BanPlayer(targetPlayer, violation)
-    local msg = ((FiveguardAddon.Config.Language.BanMessage):format(targetPlayer, violation))
+    local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.BanMessage, targetPlayer, violation)
     print(msg)
 end
 
@@ -54,7 +54,7 @@ FiveguardAddon.Server.UnbanCommand = function(playerSource, args)
     end
 
     if #args < 1 then
-        local msg = ((FiveguardAddon.Config.Language.CommandUnbanInfo):format(FiveguardAddon.Config.UnbanCommand))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.CommandUnbanInfo, FiveguardAddon.Config.UnbanCommand)
         print(msg)
         return
     end
@@ -64,45 +64,69 @@ FiveguardAddon.Server.UnbanCommand = function(playerSource, args)
     FiveguardAddon.Server.UnbanPlayer(BanID)
 
     if FiveguardAddon.Server.UnbanWert then
-        local msg = ((FiveguardAddon.Config.Language.UnbanTrue):format(BanID))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.UnbanTrue, BanID)
         print(msg)
         FiveguardAddon.Server.UnbanWert = nil
     else
-        local msg = ((FiveguardAddon.Config.Language.UnbanFalse):format(BanID))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.UnbanFalse, BanID)
         print(msg)
     end
 end
 
 FiveguardAddon.Server.GetBanInfo = function(BanId)
-    FiveguardAddon.Server.BanInfo = exports[FiveguardAddon.Config.FiveguardName]:GetBanInfoId(BanId)
+    return exports[FiveguardAddon.Config.FiveguardName]:GetBanInfoId(BanId)
 end
 
 FiveguardAddon.Server.PrintTableInfo = function(title, tbl)
-    print(title .. ":")
+    local result = {}
+
+    local titleMsg = title .. ":"
+    table.insert(result, titleMsg)
+
     for key, value in pairs(tbl) do
         if type(value) == "table" then
-            print(("  %s:"):format(tostring(key)))
+            local keyMsg = FiveguardAddon.Shared.Find("  %s:", tostring(key))
+            table.insert(result, keyMsg)
+
             for k, v in pairs(value) do
-                print(("    %s: %s"):format(tostring(k), tostring(v)))
+                local valueMsg = FiveguardAddon.Shared.Find("    %s: %s", tostring(k), tostring(v))
+                table.insert(result, valueMsg)
             end
         else
-            print(("  %s: %s"):format(tostring(key), tostring(value)))
+            local keyValueMsg = FiveguardAddon.Shared.Find("  %s: %s", tostring(key), tostring(value))
+            table.insert(result, keyValueMsg)
         end
     end
+
+    return result
 end
 
 FiveguardAddon.Server.PrintBanInfo = function(banInfo)
-    print(FiveguardAddon.Config.Language.BanInfos)
+    local result = {}
+
+    local banInfoMsg = FiveguardAddon.Config.Language.BanInfos
+    table.insert(result, banInfoMsg)
 
     local fields = {"name", "reason", "steam", "license", "xbl", "discord", "ip"}
     for _, field in ipairs(fields) do
-        print(("  %s: %s"):format(field, tostring(banInfo[field])))
+        local fieldMsg = FiveguardAddon.Shared.Find("  %s: %s", field, tostring(banInfo[field]))
+        table.insert(result, fieldMsg)
     end
 
-    print(("Manuell: %s"):format(tostring(banInfo.manual)))
+    local manualMsg = FiveguardAddon.Shared.Find("Manuell: %s", tostring(banInfo.manual))
+    table.insert(result, manualMsg)
 
-    FiveguardAddon.Server.PrintTableInfo("Tokens", banInfo.tokens)
-    FiveguardAddon.Server.PrintTableInfo("FG_TS", banInfo.fg_ts)
+    local tokensResult = FiveguardAddon.Server.PrintTableInfo("Tokens", banInfo.tokens)
+    for _, v in ipairs(tokensResult) do
+        table.insert(result, v)
+    end
+
+    local fgTSResult = FiveguardAddon.Server.PrintTableInfo("FG_TS", banInfo.fg_ts)
+    for _, v in ipairs(fgTSResult) do
+        table.insert(result, v)
+    end
+
+    return result
 end
 
 FiveguardAddon.Server.BanInfoCommand = function(playerSource, args)
@@ -112,25 +136,22 @@ FiveguardAddon.Server.BanInfoCommand = function(playerSource, args)
     end
 
     if #args < 1 then
-        local msg = ((FiveguardAddon.Config.Language.CommandInfoBan):format(FiveguardAddon.Config.BanInfoCommand))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.CommandInfoBan, FiveguardAddon.Config.BanInfoCommand)
         print(msg)
         return
     end
 
     local BanID = args[1]
 
-    FiveguardAddon.Server.GetBanInfo(BanID)
+    local BanInfo = FiveguardAddon.Server.GetBanInfo(BanID)
 
-    if FiveguardAddon.Server.BanInfo then
-        if FiveguardAddon.Server.BanInfo then
-            FiveguardAddon.Server.PrintBanInfo(FiveguardAddon.Server.BanInfo)
-        else
-            print(FiveguardAddon.Config.Language.NoBanInfo)
+    if BanInfo then
+        local BanInfo = FiveguardAddon.Server.PrintBanInfo(BanInfo)
+        for _, v in ipairs(BanInfo) do
+            print(v)
         end
-
-        FiveguardAddon.Server.BanInfo = nil
     else
-        print(FiveguardAddon.Config.Language.WrongInfo)
+        print(FiveguardAddon.Config.Language.NoBanInfo)
     end
 end
 
@@ -141,7 +162,7 @@ FiveguardAddon.Server.ScreenCommand = function(playerSource, args)
     end
 
     if #args < 1 then
-        local msg = ((FiveguardAddon.Config.Language.CommandScreenshotInfo):format(FiveguardAddon.Config.ScreenshotCommand))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.CommandScreenshotInfo, FiveguardAddon.Config.ScreenshotCommand)
         print(msg)
         return
     end
@@ -149,7 +170,7 @@ FiveguardAddon.Server.ScreenCommand = function(playerSource, args)
     local SpielerID = args[1]
 
     FiveguardAddon.Server.ScreenPlayer(SpielerID, function(url)
-        local msg = ((FiveguardAddon.Config.Language.ScreenshotCreated):format(url))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.ScreenshotCreated, url)
         print(msg)
     end)
 end
@@ -161,7 +182,7 @@ FiveguardAddon.Server.RecordCommand = function(playerSource, args)
     end
 
     if #args < 2 then
-        local msg = ((FiveguardAddon.Config.Language.CommandRecordInfo):format(FiveguardAddon.Config.RecordCommand))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.CommandRecordInfo, FiveguardAddon.Config.RecordCommand)
         print(msg)
         return
     end
@@ -170,7 +191,7 @@ FiveguardAddon.Server.RecordCommand = function(playerSource, args)
     local Time = args[2]
 
     FiveguardAddon.Server.RecordPlayer(SpielerID, Time, function(url)
-        local msg = ((FiveguardAddon.Config.Language.RecordCreated):format(url))
+        local msg = FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.RecordCreated, url)
         print(msg)
     end)
 end
@@ -228,33 +249,87 @@ FiveguardAddon.Server.DiscordBot = function(command)
     local Prefix = Config.Prefix
     local Color = Config.Color
 
+    local HelpCommand = Prefix .. FiveguardAddon.Config.HelpCommand
     local UnbanCommand = Prefix .. FiveguardAddon.Config.UnbanCommand
     local BanCommand = Prefix .. FiveguardAddon.Config.BanCommand
+    local BanInfoCommand = Prefix .. FiveguardAddon.Config.BanInfoCommand
     local ScreenshotCommand = Prefix .. FiveguardAddon.Config.ScreenshotCommand
     local RecordCommand = Prefix .. FiveguardAddon.Config.RecordCommand
 
     if FiveguardAddon.Server.String.Starts(command, Prefix) then
         if FiveguardAddon.Server.String.Starts(command, Prefix .. FiveguardAddon.Config.HelpCommand) then
-            FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.Info):format(Prefix, UnbanCommand, BanCommand, ScreenshotCommand, RecordCommand)), Color)
+            FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.Info, HelpCommand, UnbanCommand, BanInfoCommand, BanCommand, ScreenshotCommand, RecordCommand), Color)
         elseif FiveguardAddon.Server.String.Starts(command, BanCommand) then
             local _, _, playerId, reason = FiveguardAddon.Shared.Search(command, BanCommand .. "%s+(%S+)%s+(.+)")
             playerId = tonumber(playerId)
 
             if playerId and reason then
                 FiveguardAddon.Server.BanPlayer(playerId, reason)
-                FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.BanTrue):format(playerId, reason)), Color)
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.BanTrue, playerId, reason), Color)
             else
-                FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.BanFalse):format(BanCommand)), Color)
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.BanFalse, BanCommand), Color)
             end
+        elseif FiveguardAddon.Server.String.Starts(command, BanInfoCommand) then
+            local _, _, banId = FiveguardAddon.Shared.Search(command, BanInfoCommand .. "%s+(%S+)")
+            banId = tonumber(banId)
+
+            if banId then
+                local BanInfo = FiveguardAddon.Server.GetBanInfo(banId)
+                if BanInfo then
+                    local banInfoText = string.format(
+                        "```md\n# " ..
+                        FiveguardAddon.Config.Language.BanInfos ..
+                        "\n\n" ..
+                        "[Name]: %s\n" ..
+                        "[Reason]: %s\n" ..
+                        "[Steam]: %s\n" ..
+                        "[Lizenz]: %s\n" ..
+                        "[XBL]: %s\n" ..
+                        "[Discord]: %s\n" ..
+                        "[IP]: %s\n" ..
+                        "[Manuell]: %s\n\n",
+                        BanInfo.name,
+                        BanInfo.reason,
+                        BanInfo.steam,
+                        BanInfo.license,
+                        BanInfo.xbl,
+                        BanInfo.discord,
+                        BanInfo.ip,
+                        tostring(BanInfo.manual)
+                    )
+
+                    if BanInfo.tokens then
+                        banInfoText = banInfoText .. "## Tokens\n\n"
+                        for k, v in pairs(BanInfo.tokens) do
+                            banInfoText = banInfoText .. string.format("[%s]: %s\n", k, v)
+                        end
+                    end
+
+                    if BanInfo.fg_ts then
+                        banInfoText = banInfoText .. "\n## FG TS\n\n"
+                        for k, v in pairs(BanInfo.fg_ts) do
+                            banInfoText = banInfoText .. string.format("[%s]: %s\n", k, v)
+                        end
+                    end
+
+                    banInfoText = banInfoText .. "```"
+                    FiveguardAddon.Server.DiscordLog(Username, banInfoText, Color)
+                else
+                    FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Config.Language.NoBanInfo, Color)
+                end
+                FiveguardAddon.Server.BanInfo = nil
+            else
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.BanInfo, BanInfoCommand), Color)
+            end        
         elseif FiveguardAddon.Server.String.Starts(command, UnbanCommand) then
             local _, _, banId = FiveguardAddon.Shared.Search(command, UnbanCommand .. "%s+(%S+)")
             banId = tonumber(banId)
 
             if banId then
                 FiveguardAddon.Server.UnbanPlayer(banId)
-                FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.UnbanTrue):format(banId)), Color)
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.UnbanTrue, banId), Color)
             else
-                FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.UnbanFalse):format(UnbanCommand)), Color)
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.UnbanFalse, UnbanCommand), Color)
             end
         elseif FiveguardAddon.Server.String.Starts(command, ScreenshotCommand) then
             local _, _, playerId = FiveguardAddon.Shared.Search(command, ScreenshotCommand .. "%s+(%S+)")
@@ -262,10 +337,10 @@ FiveguardAddon.Server.DiscordBot = function(command)
 
             if playerId then
                 FiveguardAddon.Server.ScreenPlayer(playerId, function(url)
-                    FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.ScreenshotTrue):format(url)), Color)
+                    FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.ScreenshotTrue, url), Color)
                 end)
             else
-                FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.ScreenshotFalse):format(ScreenshotCommand)), Color)
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.ScreenshotFalse, ScreenshotCommand), Color)
             end
         elseif FiveguardAddon.Server.String.Starts(command, RecordCommand) then
             local _, _, playerId, time = FiveguardAddon.Shared.Search(command, RecordCommand .. "%s+(%S+)%s+(%S+)")
@@ -274,10 +349,10 @@ FiveguardAddon.Server.DiscordBot = function(command)
 
             if playerId and time then
                 FiveguardAddon.Server.RecordPlayer(playerId, time, function(url)
-                    FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.RecordTrue):format(url)), Color)
+                    FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.RecordTrue, url), Color)
                 end)
             else
-                FiveguardAddon.Server.DiscordLog(Username, ((FiveguardAddon.Config.Language.Bot.RecordFalse):format(RecordCommand)), Color)
+                FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Bot.RecordFalse, RecordCommand), Color)
             end
         else
             FiveguardAddon.Server.DiscordLog(Username, FiveguardAddon.Config.Language.Bot.CommandNotFound, Color)
@@ -305,7 +380,7 @@ FiveguardAddon.Server.BotLoader = function()
 
     local validateConfig = function(value, message)
         if value == '' or value == nil or value == "YOUR_BOT_TOKEN" or value == "YOUR_CHANNEL_WEBHOOK_FOR_THE_BOT" or value == "YOUR_DISCORD_CHANNEL_ID_FOR_THE_BOT" then
-            print((FiveguardAddon.Config.Language.BotLoader):format(message, value))
+            print(FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.BotLoader, message, value))
 
             return false
         end
@@ -359,7 +434,7 @@ FiveguardAddon.Server.Updater = function(oldVersion, newVersion)
     local invokingResource = GetInvokingResource()
     if not invokingResource then return end
 
-    print((FiveguardAddon.Config.Language.Updater.NewUpdatConsolePrint):format(newVersion))
+    print(FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Updater.NewUpdatConsolePrint, newVersion))
     print(FiveguardAddon.Config.Language.Updater.ServerRestartConsolePrint)
 
     local notifyDelay = 1000
@@ -371,17 +446,17 @@ FiveguardAddon.Server.Updater = function(oldVersion, newVersion)
             unit = FiveguardAddon.Config.Language.Second
         end
 
-        FiveguardAddon.Config.SV.UpdateNotify((FiveguardAddon.Config.Language.Updater.PlayerNotify):format(time, unit))
+        FiveguardAddon.Config.SV.UpdateNotify(FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Updater.PlayerNotify, time, unit))
         FiveguardAddon.Wait(notifyDelay)
     end
 
-    FiveguardAddon.Server.DiscordLog('Fiveguard Addon', (FiveguardAddon.Config.Language.Updater.DiscordLog):format(newVersion), FiveguardAddon.Config.SV.Bot.Color)
+    FiveguardAddon.Server.DiscordLog('Fiveguard Addon', FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.Updater.DiscordLog, newVersion), FiveguardAddon.Config.SV.Bot.Color)
 
     os.exit()
 end
 
 FiveguardAddon.Server.BanStop = function(resource)
-    FiveguardAddon.Server.BanPlayer(source, (FiveguardAddon.Config.Language.StopBan):format(resource))
+    FiveguardAddon.Server.BanPlayer(source, FiveguardAddon.Shared.Find(FiveguardAddon.Config.Language.StopBan, resource))
 end
 
 FiveguardAddon.Server.ResourceStarter = function(resourceName)
@@ -399,9 +474,9 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     if not CurrentVersion then return end
     if not FiveguardAddon.Config.AddonUpdateInfo then return end
 
-    local VersionAccepted = ('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s ^0- ^6(Github (https://github.com/UnrealMexd0x/))^0'):format(ResourceName, CurrentVersion)
-    local VersionDenied = ('%s^1 ✗ Resource may not Work. Please Contact UnrealMexd0x !^0 - ^6(Github (https://github.com/UnrealMexd0x/)) - ^2(Discord (UnrealMexd0x))^0'):format(ResourceName)
-    local VersionOutdated = ('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0'):format(ResourceName)
+    local VersionAccepted = FiveguardAddon.Shared.Find('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s ^0- ^6(Github (https://github.com/UnrealMexd0x/))^0', ResourceName, CurrentVersion)
+    local VersionDenied = FiveguardAddon.Shared.Find('%s^1 ✗ Resource may not Work. Please Contact UnrealMexd0x !^0 - ^6(Github (https://github.com/UnrealMexd0x/)) - ^2(Discord (UnrealMexd0x))^0', ResourceName)
+    local VersionOutdated = FiveguardAddon.Shared.Find('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0', ResourceName)
 
     local RequestVersion = function(callback)
         PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)

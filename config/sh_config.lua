@@ -1,4 +1,4 @@
--- V1.4.1 Author UnrealMexd0x
+-- V1.4.2 Author UnrealMexd0x
 
 FiveguardAddon = {
     Config = {
@@ -16,11 +16,11 @@ FiveguardAddon = {
 
         HelpCommand = "help",                                                   -- Help Command
 
-        BanInfoCommand = "baninfo",                                             -- Baninfo Command
-        BanCommand = "fgban",                                                   -- Ban Command
-        UnbanCommand = "fgunban",                                               -- Unban Command
-        ScreenshotCommand = "fgscreenshot",                                     -- Screenshot Command
-        RecordCommand = "fgrecord",                                             -- Record Command
+        BanInfoCommand = "baninfo",                                             -- Baninfo Command      (Bot, Ingame and Console Command)
+        BanCommand = "fgban",                                                   -- Ban Command          (Bot, Ingame and Console Command)
+        UnbanCommand = "fgunban",                                               -- Unban Command        (Bot, Ingame and Console Command)
+        ScreenshotCommand = "fgscreenshot",                                     -- Screenshot Command   (Bot, Ingame and Console Command)
+        RecordCommand = "fgrecord",                                             -- Record Command       (Bot, Ingame and Console Command)
 
         SendToLogs = true,                                                      -- Send to Fiveguard Discord Logs
         IgnoreStaticPermission = true,                                          -- Ignore Group Permissions
@@ -54,11 +54,14 @@ FiveguardAddon = {
             Bot = {
                 CommandNotFound = "Command not found. Please make sure you enter a valid command.",
                 Info = "Available commands:\n" ..
-                "%shelp - Displays this help.\n" ..
+                "%s - Displays this help.\n" ..
                 "%s [BanID] - Unbans a player.\n" ..
+                "%s [BanId] - Get Ban Info from ID" ..
                 "%s [Player-ID] [Reason] - Bans a player with the specified ID and reason.\n" ..
                 "%s [Player-ID] - Takes a screenshot of a player.\n" ..
                 "%s [Player-ID] [Time] - Records a video of a player.",
+
+                BanInfo =  "Usage: %s [BanID]",
 
                 BanTrue = "Player with ID %s has been banned. Reason: %s",
                 BanFalse = "Invalid use of command. Usage: %s [Player-ID] [Reason]",

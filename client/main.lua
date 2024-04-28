@@ -1,6 +1,6 @@
--- V1.4.1 Author UnrealMexd0x
+-- V1.4.2 Author UnrealMexd0x
 
-FiveguardAddon = FiveguardAddon or {}
+local FiveguardAddon = FiveguardAddon or {}
 
 FiveguardAddon.CreateThread(FiveguardAddon.Client.PLLoaded)
 
