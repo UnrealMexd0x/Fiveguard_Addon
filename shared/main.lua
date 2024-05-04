@@ -1,4 +1,4 @@
--- Version 1.4.1, Author: UnrealMexd0x
+-- V1.4.2 Author UnrealMexd0x
 
 local FiveguardAddon = FiveguardAddon or {}
 FiveguardAddon.Shared = {}
