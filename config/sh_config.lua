@@ -13,6 +13,7 @@ FiveguardAddon = {
         WeaponEvents = true,                                                    -- Blocks Various Cheat used Weapon Events
 
         DiscordBot = true,                                                      -- Enable the Fiveguard Discord Bot
+        DiscordPermissionSystem = true,                                         -- Discord Permission System only Works with the Bot
 
         HelpCommand = "help",                                                   -- Help Command
 

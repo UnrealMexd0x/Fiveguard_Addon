@@ -545,6 +545,9 @@ end
 
 FiveguardAddon.Server.ClientStart = function()
     local source = source
+
+    while not FiveguardAddon.Config.DiscordPermissionSystem do return end
+
     local check = DoesPlayerExist(source)
     while not check do Wait(100) end
 
