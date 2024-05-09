@@ -1,4 +1,4 @@
--- V1.4.2 Author UnrealMexd0x
+-- V1.4.3 Author UnrealMexd0x
 
 local FiveguardAddon = FiveguardAddon or {}
 
@@ -9,6 +9,10 @@ FiveguardAddon.Client = {
 
 FiveguardAddon.Client.PLLoaded = function()
     FiveguardAddon.Client.playerLoaded = true
+
+    Citizen.Wait(1000)
+
+    TriggerServerEvent("FiveguardAddon:ClientStart")
 end
 
 FiveguardAddon.Client.checkWhitelist = function(resource)

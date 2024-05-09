@@ -1,4 +1,4 @@
--- V1.4.2 Author UnrealMexd0x
+-- V1.4.3 Author UnrealMexd0x
 
 local FiveguardAddon = FiveguardAddon or {}
 
@@ -207,18 +207,25 @@ end
 FiveguardAddon.Server.DiscordRequest = function(method, endpoint, jsondata)
     local data = nil
 
+    local requestData = ""
+    if jsondata then
+        requestData = json.encode(jsondata)
+    end
+
     PerformHttpRequest("https://discordapp.com/api/" .. endpoint, function(errorCode, resultData, resultHeaders)
         data = {
             data = resultData,
             code = errorCode,
             headers = resultHeaders
         }
-    end, method, #jsondata > 0 and json.encode(jsondata) or "", {
+    end, method, requestData, {
         ["Content-Type"] = "application/json",
         ["Authorization"] = "Bot " .. FiveguardAddon.Config.SV.Bot.BotToken
     })
 
-    while data == nil do FiveguardAddon.Wait(0) end
+    while data == nil do
+        FiveguardAddon.Wait(0)
+    end
 
     return data
 end
@@ -393,7 +400,8 @@ FiveguardAddon.Server.BotLoader = function()
     end
 
     while true do
-        local channel = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID, {})
+        local endpoint = "channels/" .. channelID
+        local channel = FiveguardAddon.Server.DiscordRequest("GET", endpoint)
 
         if channel.data then
             local data = json.decode(channel.data)
@@ -403,7 +411,8 @@ FiveguardAddon.Server.BotLoader = function()
             if not list then
                 FiveguardAddon.Server.DiscordLog('Fiveguard Addon', 'Welcome to the Fiveguard_Addon Discord Bot', FiveguardAddon.Config.SV.Bot.Color)
             else
-                lastmessage = FiveguardAddon.Server.DiscordRequest("GET", "channels/" .. channelID .. "/messages/" .. list, {})
+                endpoint = endpoint .. "/messages/" .. list
+                lastmessage = FiveguardAddon.Server.DiscordRequest("GET", endpoint)
             end
 
             if lastmessage.data then
@@ -471,12 +480,11 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
         print(ResourceName .. " ^1Please consider changing the resource name to something less obvious, like esx_RANDOMSCRIPTNAME^0.")
     end
 
-    if not CurrentVersion then return end
-    if not FiveguardAddon.Config.AddonUpdateInfo then return end
+    if not CurrentVersion or not FiveguardAddon.Config.AddonUpdateInfo then return end
 
-    local VersionAccepted = FiveguardAddon.Shared.Find('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s ^0- ^6(Github (https://github.com/UnrealMexd0x/))^0', ResourceName, CurrentVersion)
-    local VersionDenied = FiveguardAddon.Shared.Find('%s^1 ✗ Resource may not Work. Please Contact UnrealMexd0x !^0 - ^6(Github (https://github.com/UnrealMexd0x/)) - ^2(Discord (UnrealMexd0x))^0', ResourceName)
-    local VersionOutdated = FiveguardAddon.Shared.Find('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0', ResourceName)
+    local VersionAccepted = string.format('%s^2 ✓ Started Correctly^0 - ^5Current Version: ^2%s ^0- ^6(Github (https://github.com/UnrealMexd0x/))^0', ResourceName, CurrentVersion)
+    local VersionDenied = string.format('%s^1 ✗ Resource may not Work. Please Contact UnrealMexd0x !^0 - ^6(Github (https://github.com/UnrealMexd0x/)) - ^2(Discord (UnrealMexd0x))^0', ResourceName)
+    local VersionOutdated = string.format('%s^1 ✗ Resource Outdated. Please Update!^0 - ^6Download on Github (https://github.com/UnrealMexd0x/Fiveguard_Addon/releases)^0', ResourceName)
 
     local RequestVersion = function(callback)
         PerformHttpRequest('https://raw.githubusercontent.com/UnrealMexd0x/Fiveguard_Addon/main/fxmanifest.lua', function(errorCode, jsonString, headers)
@@ -492,12 +500,83 @@ FiveguardAddon.Server.ResourceStarter = function(resourceName)
     RequestVersion(function(remoteVersion)
         if not FiveguardAddon or next(FiveguardAddon) == nil or remoteVersion == 'error' then
             print(VersionDenied)
-        elseif CurrentVersion ~= remoteVersion then
+        elseif CurrentVersion < remoteVersion then
+            print(VersionAccepted)
+        elseif CurrentVersion > remoteVersion then
             print(VersionOutdated)
         else
             print(VersionAccepted)
         end
     end)
+end
+
+FiveguardAddon.Server.GetDiscordID = function(player)
+    local identifiers = GetPlayerIdentifiers(player)
+    for _, identifier in ipairs(identifiers) do
+        if string.find(identifier, "discord:") then
+            return string.sub(identifier, 9)
+        end
+    end
+    return nil
+end
+
+FiveguardAddon.Server.GetRolesFromDiscordID = function(discordID)
+    local endpoint = ("guilds/%s/members/%s"):format(FiveguardAddon.Config.SV.Bot.ServerID, discordID)
+    local response = FiveguardAddon.Server.DiscordRequest("GET", endpoint)
+
+    if response.code == 200 then
+        if response.data then
+            local success, data = pcall(json.decode, response.data)
+            if success then
+                return data.roles or {}
+            else
+                print("ERROR: Failed to decode JSON response while fetching roles for Discord user: " .. discordID)
+                return {}
+            end
+        else
+            print("ERROR: Empty or nil response data received while fetching roles for Discord user: " .. discordID)
+            return {}
+        end
+    else
+        print("ERROR: Failed to fetch roles for Discord user: " .. discordID)
+        return {}
+    end
+end
+
+FiveguardAddon.Server.ClientStart = function()
+    local source = source
+    local check = DoesPlayerExist(source)
+    while not check do Wait(100) end
+
+    local dcID = FiveguardAddon.Server.GetDiscordID(source)
+    if dcID then
+        local roles = FiveguardAddon.Server.GetRolesFromDiscordID(dcID)
+
+        if roles then
+            for _, roleID in ipairs(roles) do
+                local permissions = FiveguardAddon.Config.SV.Bot.RolePermissions[roleID]
+                if permissions then
+                    for category, permissionCategory in pairs(permissions) do
+                        for _, permission in ipairs(permissionCategory) do
+                            local result, errorText
+                            if category == "AdminMenu" or category == "Client" or category == "Weapon" or category == "Vehicle" or category == "Blacklist" or category == "Misc" then
+                                result, errorText = exports[FiveguardAddon.Config.FiveguardName]:SetTempPermission(source, category, permission, true, FiveguardAddon.Config.IgnoreStaticPermission)
+                            else
+                                print("Unknown category: " .. category)
+                            end
+                            if not result then
+                                print("Error setting temporary permission for Discord user " .. dcID .. ": " .. errorText)
+                            end
+                        end
+                    end
+                end
+            end
+        else
+            print("ERROR: No roles found for Discord user: " .. dcID)
+        end
+    else
+        print("ERROR: Discord ID not found for player: " .. GetPlayerName(source))
+    end
 end
 
 return FiveguardAddon.Server

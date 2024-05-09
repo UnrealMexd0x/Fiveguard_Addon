@@ -1,4 +1,4 @@
--- V1.4.2 Author UnrealMexd0x
+-- V1.4.3 Author UnrealMexd0x
 
 FiveguardAddon.Config.SV = {
     Bot = {
@@ -12,6 +12,77 @@ FiveguardAddon.Config.SV = {
         WebHook = "YOUR_CHANNEL_WEBHOOK_FOR_THE_BOT",
         ChannelID = "YOUR_DISCORD_CHANNEL_ID_FOR_THE_BOT",
         --------------------------------------------
+
+        -- Discord Permission System for Fiveguard uses the Discord Bot
+        ServerID = "YOUR_DISCORD_SERVER_ID",
+        RolePermissions = {
+            ["1111111111111111111"] = {
+                AdminMenu = {
+                    "AdminMenuAccess",
+                    "AnnouncementAccess",
+                    "ESPAccess",
+                    "ClearEntitiesAccess",
+                    "BanAndKickAccess",
+                    "GotoAndBringAccess",
+                    "VehicleAccess",
+                    "MiscAccess",
+                    "LogsAccess",
+                    "PlayerSelectorAccess",
+                    "BanListAndUnbanAccess",
+                    "ModelChangerAccess"
+                },
+                Client = {
+                    "BypassSpectate",
+                    "BypassGodMode",
+                    "BypassInvisible",
+                    "BypassStealOutfit",
+                    "BypassInfStamina",
+                    "BypassNoclip",
+                    "BypassSuperJump",
+                    "BypassFreecam",
+                    "BypassSpeedHack",
+                    "BypassTeleport",
+                    "BypassNightVision",
+                    "BypassThermalVision",
+                    "BypassOCR",
+                    "BypassNuiDevtools",
+                    "BypassBlacklistedTextures",
+                    "BlipsBypass",
+                    "BypassCbScanner"
+                },
+                Weapon = {
+                    "BypassWeaponDmgModifier",
+                    "BypassInfAmmo",
+                    "BypassNoReload",
+                    "BypassRapidFire"
+                },
+                Vehicle = {
+                    "BypassVehicleFixAndGodMode",
+                    "BypassVehicleHandlingEdit",
+                    "BypassVehicleModifier",
+                    "BypassBulletproofTires"
+                },
+                Blacklist = {
+                    "BypassModelChanger",
+                    "BypassWeaponBlacklist"
+                },
+                Misc = {
+                    "FGCommands",
+                    "BypassVPN",
+                    "BypassExplosion",
+                    "BypassClearTasks",
+                    "BypassParticle"
+                }
+            },
+            ["DISCORD_ROLE_ID"] = {
+                Client = {
+                    "BypassNoclip",
+                    "BypassThermalVision",
+                    "BypassOCR",
+                    "BypassNuiDevtools"
+                }
+            }
+        },
 
         -- Users Allowed to Interact with the Bot --
         Allowedusers = {

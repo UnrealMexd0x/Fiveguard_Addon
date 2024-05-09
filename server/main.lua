@@ -1,4 +1,4 @@
--- V1.4.2 Author UnrealMexd0x
+-- V1.4.3 Author UnrealMexd0x
 
 local FiveguardAddon = FiveguardAddon or {}
 
@@ -9,6 +9,7 @@ FiveguardAddon.AddEvent('weaponDamageEvent', FiveguardAddon.Server.WeaponEvent)
 FiveguardAddon.AddEvent('onServerResourceStart', FiveguardAddon.Server.ResourceStarter)
 
 FiveguardAddon.Register("Fiveguard_Addon:BanPlayerStop", FiveguardAddon.Server.BanStop)
+FiveguardAddon.Register("FiveguardAddon:ClientStart", FiveguardAddon.Server.ClientStart)
 
 FiveguardAddon.Command(FiveguardAddon.Config.BanCommand, FiveguardAddon.Server.BanCommand, false)
 FiveguardAddon.Command(FiveguardAddon.Config.UnbanCommand, FiveguardAddon.Server.UnbanCommand, false)

@@ -1,4 +1,4 @@
--- V1.4.2 Author UnrealMexd0x
+-- V1.4.3 Author UnrealMexd0x
 
 FiveguardAddon = {
     Config = {
@@ -23,7 +23,7 @@ FiveguardAddon = {
         RecordCommand = "fgrecord",                                             -- Record Command       (Bot, Ingame and Console Command)
 
         SendToLogs = true,                                                      -- Send to Fiveguard Discord Logs
-        IgnoreStaticPermission = true,                                          -- Ignore Group Permissions
+        IgnoreStaticPermission = true,                                          -- Ignore Static Permissions
 
         Language = {
             Second = "second",
