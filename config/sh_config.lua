@@ -57,7 +57,7 @@ FiveguardAddon = {
                 Info = "Available commands:\n" ..
                 "%s - Displays this help.\n" ..
                 "%s [BanID] - Unbans a player.\n" ..
-                "%s [BanId] - Get Ban Info from ID" ..
+                "%s [BanId] - Get Ban Info from ID\n" ..
                 "%s [Player-ID] [Reason] - Bans a player with the specified ID and reason.\n" ..
                 "%s [Player-ID] - Takes a screenshot of a player.\n" ..
                 "%s [Player-ID] [Time] - Records a video of a player.",
