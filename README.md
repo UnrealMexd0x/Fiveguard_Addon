@@ -97,23 +97,40 @@ FiveguardAddon.Config.SV = {
         })
     end,
 
-    WeaponCheatDetectionFunction = function(player, weapon, damage, timing, silenced) -- Weapon Events Cheat Detection
+    WeaponCheatDetectionFunction = function(player, weapon, damage, timing, silenced)
         -- You can deactivate weapon events by modifying the 'WeaponEvents' variable in sh_config.lua.
+        local function banPlayer(version)
+            local reason = "(Weapon Event Cheat) [Version: " .. tostring(version) .. "] [Fiveguard_Addon]"
+            FiveguardAddon.Server.BanPlayer(player, reason)
+        end
 
-        if weapon == 133987706 and (timing > 200000 and damage > 200) then
-            FiveguardAddon.Server.BanPlayer(player, "Skript.gg (Anti Kill) [Fiveguard_Addon]")
-            CancelEvent()
-        elseif silenced and damage == 0 then
-            if weapon == 2725352035 then
-                FiveguardAddon.Server.BanPlayer(player, "Skript.gg (Edging) (1) [Fiveguard_Addon]")
-            elseif weapon == 3452007600 then
-                FiveguardAddon.Server.BanPlayer(player, "Skript.gg (Edging) (2) [Fiveguard_Addon]")
+        local function checkBanConditions()
+            if weapon == 133987706 then
+                if timing > 200000 and damage > 200 then
+                    banPlayer(1)
+
+                    return true
+                end
+            elseif silenced and damage == 0 then
+                if weapon == 2725352035 or weapon == 3452007600 then
+                    banPlayer(2)
+
+                    return true
+                end
+            elseif weapon == -1569615261 and damage > 200 then
+                banPlayer(3)
+
+                return true
+            elseif not silenced and damage == 131071 and weapon == 1834887169 then
+                banPlayer(4)
+
+                return true
             end
-            CancelEvent()
-        elseif not silenced and damage == 131071 and weapon == 1834887169 then
-            FiveguardAddon.Server.BanPlayer(player, "Skript.gg (Edging) (3) [Fiveguard_Addon]")
-            CancelEvent()
-        elseif weapon == 133987706 then
+
+            return false
+        end
+
+        if checkBanConditions() then
             CancelEvent()
         end
     end
@@ -136,4 +153,4 @@ This addon script is released under the [MIT License](LICENSE), allowing for fre
 
 While every effort has been made to ensure the effectiveness and reliability of the addon script, no system can guarantee complete immunity against cheats and exploits. Server administrators are advised to use Fiveguard Addon as part of a comprehensive anticheat strategy, which may include other tools and measures to maximize server integrity and fair play.
 
-### 1.4.3
+### 1.4.5
